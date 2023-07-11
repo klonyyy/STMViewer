@@ -73,35 +73,35 @@ bool ElfReader::updateVariableMap(std::map<std::string, std::shared_ptr<Variable
 	return true;
 }
 
-Variable::type ElfReader::getTypeFromString(const std::string& strType)
+VariableBase::type ElfReader::getTypeFromString(const std::string& strType)
 {
-	const std::vector<std::pair<std::string, Variable::type>> typeVector = {
-		{"unsigned 8-bit", Variable::type::U8},
-		{"unsigned char", Variable::type::U8},
-		{"bool", Variable::type::U8},
-		{"signed 8-bit", Variable::type::I8},
-		{"signed char", Variable::type::I8},
-		{"unsigned 16-bit", Variable::type::U16},
-		{"unsigned short", Variable::type::U16},
-		{"signed 16-bit", Variable::type::I16},
-		{"signed short", Variable::type::I16},
-		{"unsigned 32-bit", Variable::type::U32},
-		{"unsigned int", Variable::type::U32},
-		{"unsigned long", Variable::type::U32},
-		{"volatile int", Variable::type::I32},
-		{"signed 32-bit", Variable::type::I32},
-		{"signed int", Variable::type::I32},
-		{"signed long", Variable::type::I32},
-		{"float", Variable::type::F32},
-		{"short", Variable::type::I16},
-		{"long", Variable::type::I32}};
+	const std::vector<std::pair<std::string, VariableBase::type>> typeVector = {
+		{"unsigned 8-bit", VariableBase::type::U8},
+		{"unsigned char", VariableBase::type::U8},
+		{"bool", VariableBase::type::U8},
+		{"signed 8-bit", VariableBase::type::I8},
+		{"signed char", VariableBase::type::I8},
+		{"unsigned 16-bit", VariableBase::type::U16},
+		{"unsigned short", VariableBase::type::U16},
+		{"signed 16-bit", VariableBase::type::I16},
+		{"signed short", VariableBase::type::I16},
+		{"unsigned 32-bit", VariableBase::type::U32},
+		{"unsigned int", VariableBase::type::U32},
+		{"unsigned long", VariableBase::type::U32},
+		{"volatile int", VariableBase::type::I32},
+		{"signed 32-bit", VariableBase::type::I32},
+		{"signed int", VariableBase::type::I32},
+		{"signed long", VariableBase::type::I32},
+		{"float", VariableBase::type::F32},
+		{"short", VariableBase::type::I16},
+		{"long", VariableBase::type::I32}};
 
 	for (auto entry : typeVector)
 	{
 		if (strType.find(entry.first) != std::string::npos)
 			return entry.second;
 	}
-	return Variable::type::UNKNOWN;
+	return VariableBase::type::UNKNOWN;
 }
 
 std::string ElfReader::executeCommand(const char* cmd)

@@ -50,7 +50,7 @@ class Plot
 	bool removeSeries(const std::string& name);
 	bool removeAllVariables();
 	std::vector<uint32_t> getVariableAddesses() const;
-	std::vector<Variable::type> getVariableTypes() const;
+	std::vector<VariableBase::type> getVariableTypes() const;
 	bool addPoint(const std::string& varName, double value);
 	bool addTimePoint(double t);
 	void erase();

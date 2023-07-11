@@ -18,7 +18,7 @@ class TargetMemoryHandler
 	bool stop() const;
 
 	uint32_t getValue(uint32_t address) const;
-	double getValue(uint32_t address, Variable::type type);
+	double getValue(uint32_t address, VariableBase::type type);
 	bool setValue(const Variable& var, double value);
 	std::string getLastErrorMsg() const;
 

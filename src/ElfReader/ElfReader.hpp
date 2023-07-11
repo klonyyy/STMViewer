@@ -15,7 +15,7 @@ class ElfReader
 	ElfReader(std::string& filename, std::shared_ptr<spdlog::logger> logger);
 
 	bool updateVariableMap(std::map<std::string, std::shared_ptr<Variable>>& vars);
-	Variable::type getTypeFromString(const std::string& strType);
+	VariableBase::type getTypeFromString(const std::string& strType);
 
    private:
 	static constexpr uint8_t maxNameLength = 100;
