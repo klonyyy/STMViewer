@@ -62,22 +62,25 @@ void Gui::drawPlotCurve(Plot* plot, ScrollingBuffer<double>& time, std::map<std:
 {
 	if (ImPlot::BeginPlot(plot->getName().c_str(), ImVec2(-1, -1), ImPlotFlags_NoChild))
 	{
+		
+		PlotHandler::Settings settings = plotHandler->getSettings();
+		static double viewportWidth = settings.maxViewportTime;
+		static PlotHandler::state viewerStatePrev = PlotHandler::state::STOP;
 		if (plotHandler->getViewerState() == PlotHandler::state::RUN)
-		{
-			PlotHandler::Settings settings = plotHandler->getSettings();
-			ImPlot::SetupAxis(ImAxis_Y1, NULL, ImPlotAxisFlags_AutoFit);
-			ImPlot::SetupAxis(ImAxis_X1, "time[s]", 0);
-			const double viewportWidth = (1.0 / plotHandler->getAverageSamplingFrequency()) * settings.maxViewportPoints;
-			const double min = *time.getLastElement() < viewportWidth ? 0.0f : *time.getLastElement() - viewportWidth;
-			const double max = min == 0.0f ? *time.getLastElement() : min + viewportWidth;
-			ImPlot::SetupAxisLimits(ImAxis_X1, min, max, ImPlotCond_Always);
+		{	
+			static std::chrono::time_point<std::chrono::steady_clock> start;
+			if (viewerStatePrev == PlotHandler::state::STOP)
+				start = std::chrono::steady_clock::now();
+			auto finish = std::chrono::steady_clock::now();
+			const double acquisitionTime = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
+			const double min = acquisitionTime < viewportWidth ? 0.0f : acquisitionTime - viewportWidth;
+			const double max = min + viewportWidth;
+			ImPlot::SetupAxisLimits(ImAxis_X1, min, max, ImPlotCond_Always); 
 		}
-		else
-		{
-			ImPlot::SetupAxes("time[s]", NULL, 0, 0);
-			ImPlot::SetupAxisLimits(ImAxis_X1, -1, 10, ImPlotCond_Once);
-			ImPlot::SetupAxisLimits(ImAxis_Y1, -0.1, 0.1, ImPlotCond_Once);
-		}
+		viewerStatePrev = plotHandler->getViewerState();
+		ImPlot::SetupAxes("time[s]",NULL, 0, ImPlotAxisFlags_AutoFit);
+		ImPlot::SetupAxisLimits(ImAxis_X1, 0, viewportWidth, ImPlotCond_Once);
+		viewportWidth = ImPlot::GetPlotLimits().X.Size();
 
 		plot->setIsHovered(ImPlot::IsPlotHovered());
 
@@ -130,7 +133,6 @@ void Gui::drawPlotCurve(Plot* plot, ScrollingBuffer<double>& time, std::map<std:
 				ImPlot::PlotScatter("###point", &timepoint, &value, 1, false);
 			}
 		}
-
 		ImPlot::EndPlot();
 	}
 }
